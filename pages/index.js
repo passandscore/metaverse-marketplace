@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Web3Modal from "web3modal";
 
-import { nftaddress, nftmarketaddress } from "../.config";
+import { nftaddress, nftmarketaddress } from "../config";
 
 // ABIS
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
