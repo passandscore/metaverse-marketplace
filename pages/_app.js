@@ -1,7 +1,36 @@
 import "../styles/globals.css";
 import Link from "next/link";
 
+import { ethers } from "ethers";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Web3Modal from "web3modal";
+
 function Marketplace({ Component, pageProps }) {
+  const [wallet, setWallet] = useState({ wallet: "", balance: 0, network: "" });
+
+  useEffect(() => {
+    loadWalletDetails();
+  }, []);
+
+  async function loadWalletDetails() {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const accounts = await provider.listAccounts();
+    const balance = await provider.getBalance(accounts[0]);
+    balance = Number(ethers.utils.formatEther(balance)).toFixed(2);
+    const network = await provider.getNetwork();
+
+    setWallet({
+      wallet: accounts[0],
+      balance: balance,
+      network: network.name,
+    });
+    console.log(wallet);
+  }
+
   return (
     <div>
       <nav className="border-b p-6">

@@ -75,6 +75,7 @@ export default function CreateItem() {
     let contract = new ethers.Contract(nftaddress, NFT.abi, signer);
     let transaction = await contract.createToken(url);
     let tx = await transaction.wait();
+    console.log(tx);
     let event = tx.events[0]; // contract event return value.
     let value = event.args[2];
     let tokenId = value.toNumber();
