@@ -13,6 +13,7 @@
     "@openzeppelin/contracts": "^4.3.2",
     "axios": "^0.24.0",
     "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
     "dotenv": "^10.0.0",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.1",
@@ -21,6 +22,7 @@
     "next": "12.0.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "solidity-coverage": "^0.7.17",
     "web3modal": "^1.9.4"
   },
   "devDependencies": {

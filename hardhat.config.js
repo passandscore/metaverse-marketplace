@@ -4,6 +4,7 @@
 
 require("@nomiclabs/hardhat-waffle");
 require("dotenv").config();
+require("solidity-coverage");
 
 module.exports = {
   networks: {
