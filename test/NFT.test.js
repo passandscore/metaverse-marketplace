@@ -33,9 +33,9 @@ describe("NFT Token Creation", function () {
 
   it("Should update the tokenId count", async function () {
     for (i = 0; i < 2; i++) {
-      const token = await nft.createToken(
-        `https://www.mytokenlocation-${i}.com`
-      );
+      const token = await nft
+        .connect(addr1)
+        .createToken(`https://www.mytokenlocation-${i}.com`);
       let tx = await token.wait();
       let event = tx.events[0];
       let value = event.args[2];
@@ -47,24 +47,30 @@ describe("NFT Token Creation", function () {
 
   it("Should update the users token balance", async function () {
     const before = await nft.balanceOf(owner.address);
-    const token = await nft.createToken(`https://www.mytokenlocation.com`);
+    const token = await nft
+      .connect(owner)
+      .createToken(`https://www.mytokenlocation.com`);
     await token.wait();
     const after = await nft.balanceOf(owner.address);
     expect(after.toNumber()).to.be.eq(before.toNumber() + 1);
   });
 
   it("Should set the sender as the token owner", async function () {
-    const token = await nft.createToken(`https://www.mytokenlocation.com`);
+    const token = await nft
+      .connect(addr1)
+      .createToken(`https://www.mytokenlocation.com`);
     const tx = await token.wait();
     const event = tx.events[0];
     const value = event.args[2];
     const tokenId = value.toNumber();
     const tokenOwner = await nft.ownerOf(tokenId);
-    expect(owner.address).to.be.eq(tokenOwner);
+    expect(addr1.address).to.be.eq(tokenOwner);
   });
 
   it("Should emit a transfer event", async function () {
-    const token = await nft.createToken(`https://www.mytokenlocation.com`);
+    const token = await nft
+      .connect(addr1)
+      .createToken(`https://www.mytokenlocation.com`);
     const tx = await token.wait();
     const event = tx.events[0].event;
     expect(event).to.be.eq("Transfer");

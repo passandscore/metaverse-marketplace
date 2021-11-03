@@ -48,7 +48,7 @@ contract NFTMarket is ReentrancyGuard {
     // Market ItemID -> MarketItem
     mapping(uint256 => MarketItem) private idToMarketItem;
 
-    event MarketItemCreated(
+    event MarketItemStatus(
         uint256 indexed itemId,
         address indexed nftContract,
         uint256 indexed tokenId,
@@ -58,9 +58,22 @@ contract NFTMarket is ReentrancyGuard {
         bool sold
     );
 
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
     // Returns the listing price of the contract
     function getListingPrice() public view returns (uint256) {
         return listingPrice;
+    }
+
+    function getOwner() public view onlyOwner returns (address) {
+        return owner;
+    }
+
+    function getOwnerBalance() public view onlyOwner returns (uint256) {
+        return owner.balance;
     }
 
     /* Places an item for sale on the marketplace */
@@ -91,7 +104,7 @@ contract NFTMarket is ReentrancyGuard {
         // Transfer ownership of the token to the marketplace
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
 
-        emit MarketItemCreated(
+        emit MarketItemStatus(
             itemId,
             nftContract,
             tokenId,
@@ -122,6 +135,16 @@ contract NFTMarket is ReentrancyGuard {
         idToMarketItem[itemId].sold = true;
         _itemsSold.increment();
         payable(owner).transfer(listingPrice);
+
+        emit MarketItemStatus(
+            itemId,
+            nftContract,
+            tokenId,
+            idToMarketItem[itemId].seller,
+            msg.sender,
+            price,
+            true
+        );
     }
 
     // Returns all unsold market items
