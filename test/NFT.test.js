@@ -1,13 +1,15 @@
+// https://www.npmjs.com/package/solidity-coverage
+// https://docs.ethers.io/v5/
+// https://www.chaijs.com/
+
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-require("chai").use(require("chai-as-promised")).should();
 
 let market;
 let nft;
 let owner;
 let addr1;
 let addr2;
-let addrs;
 
 beforeEach(async () => {
   const Market = await ethers.getContractFactory("NFTMarket");

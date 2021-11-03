@@ -1,17 +1,17 @@
+// https://www.npmjs.com/package/solidity-coverage
+// https://docs.ethers.io/v5/
+// https://www.chaijs.com/
+
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const { BigNumber } = require("ethers");
-require("chai").use(require("chai-as-promised")).should();
 
 let market;
 let nft;
 let owner;
 let addr1;
 let addr2;
-let addr3;
 let marketAddress;
 let nftContractAddress;
-let askingPrice = "1";
 
 async function createNFT(sender) {
   const token = await nft
@@ -41,8 +41,8 @@ function etherToWei(ether) {
   return ethers.utils.parseEther(ether).toString();
 }
 
-function askingPriceToWei() {
-  let price = ethers.utils.parseEther(askingPrice);
+function askingPriceToWei(etherAmount) {
+  let price = ethers.utils.parseEther(etherAmount);
   return (price = price.toString());
 }
 
@@ -74,15 +74,40 @@ describe("NFT Market Deployment", function () {
   });
 });
 
-describe("Place an item for sale on the marketplace", function () {
-  it("Should error if asking price is NOT greater than zero", async function () {
-    // Set the listing fee
-    const listingPrice = etherToWei("0.025");
-
-    // Provide an asking price for the NFT
-    const auctionPrice = BigNumber.from(
-      ethers.utils.parseUnits("0", "ether").toString()
+describe("Owner only functions", function () {
+  it("Should error is msg.sender trys to access owner balance", async function () {
+    await expect(market.connect(addr1).getOwnerBalance()).to.be.revertedWith(
+      "Only the owner can do this"
     );
+  });
+
+  it("Should error is msg.sender trys to access owner address", async function () {
+    await expect(market.connect(addr1).getOwner()).to.be.revertedWith(
+      "Only the owner can do this"
+    );
+  });
+
+  it("Should error is msg.sender trys to access owner balance", async function () {
+    await expect(market.connect(addr1).getOwnerBalance()).to.be.revertedWith(
+      "Only the owner can do this"
+    );
+  });
+
+  it("Should return owner address if msg.sender is owner", async function () {
+    const ownerAddress = await market.getOwner();
+    expect(ownerAddress).to.equal(owner.address);
+  });
+
+  it("Should return owner balance if msg.sender is owner", async function () {
+    const ownerBalance = await market.getOwnerBalance();
+    expect(ownerBalance).to.not.equal("0");
+  });
+});
+
+describe("Place an item for sale on the marketplace", function () {
+  it("Should error if asking price is NOT greater than 1 wei", async function () {
+    const listingPrice = etherToWei("0.025");
+    const auctionPrice = askingPriceToWei("0");
 
     // Create an NFT
     const tokenId = await createNFT(addr1);
@@ -98,13 +123,8 @@ describe("Place an item for sale on the marketplace", function () {
   });
 
   it("Should error if the provided listing fee is different than expected", async function () {
-    // Set the listing fee higher than requested
     const listingPrice = etherToWei("0.03");
-
-    // Provide an asking price for the NFT
-    const auctionPrice = BigNumber.from(
-      ethers.utils.parseUnits("1", "ether").toString()
-    );
+    const auctionPrice = askingPriceToWei("1");
 
     // Create an NFT
     const tokenId = await createNFT(addr1);
@@ -123,13 +143,8 @@ describe("Place an item for sale on the marketplace", function () {
     let itemIds = [];
 
     for (i = 0; i < 2; i++) {
-      // Set the listing fee
       const listingPrice = etherToWei("0.025");
-
-      // Provide an asking price for the NFT
-      const auctionPrice = BigNumber.from(
-        ethers.utils.parseUnits("1", "ether").toString()
-      );
+      const auctionPrice = askingPriceToWei("1");
 
       // Create an NFT
       const tokenId = await createNFT(addr1);
@@ -157,13 +172,8 @@ describe("Place an item for sale on the marketplace", function () {
     let marketplaceOwner = "0x0000000000000000000000000000000000000000";
     let newOwner;
 
-    // Set the listing fee
     const listingPrice = etherToWei("0.025");
-
-    // Provide an asking price for the NFT
-    const auctionPrice = BigNumber.from(
-      ethers.utils.parseUnits("1", "ether").toString()
-    );
+    const auctionPrice = askingPriceToWei("1");
 
     // Create an NFT
     const tokenId = await createNFT(addr1);
@@ -189,11 +199,7 @@ describe("Place an item for sale on the marketplace", function () {
   it("Should emit a MarketItemStatus event", async function () {
     // Set the listing fee
     const listingPrice = etherToWei("0.025");
-
-    // Provide an asking price for the NFT
-    const auctionPrice = BigNumber.from(
-      ethers.utils.parseUnits("1", "ether").toString()
-    );
+    const auctionPrice = askingPriceToWei("1");
 
     // Create an NFT
     const tokenId = await createNFT(addr1);
@@ -208,26 +214,27 @@ describe("Place an item for sale on the marketplace", function () {
     // Retrieve the item ID from the event object
     let newListing = await item.wait();
     let events = newListing.events;
-    let event = events[events.length - 1].event;
+    let event = events[events.length - 1];
+    let args = event.args;
 
-    expect(event).to.eq("MarketItemStatus");
+    expect(event.event).to.eq("MarketItemStatus");
+    expect(args.itemId.toString()).to.eq("1");
+    expect(args.nftContract.toString()).to.eq(nft.address);
+    expect(args.tokenId.toString()).to.eq(tokenId.toString());
+    expect(args.seller.toString()).to.eq(addr1.address);
+    expect(args.owner.toString()).to.eq(
+      "0x0000000000000000000000000000000000000000"
+    );
+    expect(args.price.toString()).to.eq(auctionPrice.toString());
+    expect(args.sold).to.eq(false);
   });
 });
 
 describe("Sell an item on the marketplace", function () {
-  let tokenId;
-  let askingPrice = "1";
-  let listingPrice;
-  let auctionPrice;
+  const listingPrice = etherToWei("0.025");
+  const auctionPrice = askingPriceToWei("1");
 
   beforeEach(async () => {
-    listingPrice = etherToWei("0.025");
-
-    // Provide an asking price for the NFT
-    auctionPrice = BigNumber.from(
-      ethers.utils.parseUnits(askingPrice, "ether").toString()
-    );
-
     // Create an NFT
     tokenId = await createNFT(addr1);
 
@@ -245,23 +252,45 @@ describe("Sell an item on the marketplace", function () {
   it("Should error if the wrong asking price is entered", async function () {
     // Create a market sale
     await expect(
-      market
-        .connect(addr1)
-        .createMarketSale(nftContractAddress, 1, { value: etherToWei("2") })
+      market.connect(addr1).createMarketSale(nftContractAddress, tokenId, {
+        value: etherToWei("2"),
+      })
     ).to.be.revertedWith(
       "Please submit the asking price in order to complete the purchase"
     );
   });
 
-  it("Should should transfer ownership to the seller", async function () {
+  it("Should provide the seller with payment", async function () {
+    // Determine the balance of the seller
+    let previousBalance = await nft.balanceOf(addr2.address);
+    previousBalance = ethers.utils.parseEther(previousBalance.toString());
+
+    // Create a market sale
+    let sale = await market
+      .connect(addr2)
+      .createMarketSale(nftContractAddress, tokenId, {
+        value: auctionPrice,
+      });
+
+    // Mine the transaction
+    sale = await sale.wait();
+
+    // Determine the balance of the seller
+    let currentBalance = await nft.balanceOf(addr2.address);
+    currentBalance = ethers.utils.parseEther(currentBalance.toString());
+
+    expect(currentBalance).to.eq(previousBalance + auctionPrice);
+  });
+
+  it("Should transfer ownership to the seller. Update NFT contract", async function () {
     // Determine the previous owner of the token
     const previousOwner = await nft.ownerOf(tokenId);
 
     // Create a market sale
     let sale = await market
       .connect(addr1)
-      .createMarketSale(nftContractAddress, 1, {
-        value: etherToWei(askingPrice),
+      .createMarketSale(nftContractAddress, tokenId, {
+        value: auctionPrice,
       });
 
     // Mine the transaction
@@ -274,34 +303,31 @@ describe("Sell an item on the marketplace", function () {
     expect(newOwner).to.eq(addr1.address);
   });
 
-  it("Should provide the seller with payment", async function () {
-    // Determine the balance of the seller
-    let previousBalance = await nft.balanceOf(addr2.address);
-    previousBalance = ethers.utils.parseEther(previousBalance.toString());
-
+  it("Should update the item owner within the marketplace.", async function () {
     // Create a market sale
-    let sale = await market
+    let tx = await market
       .connect(addr2)
-      .createMarketSale(nftContractAddress, 1, {
-        value: askingPriceToWei(),
+      .createMarketSale(nftContractAddress, tokenId, {
+        value: auctionPrice,
       });
 
     // Mine the transaction
-    sale = await sale.wait();
+    tx = await tx.wait();
 
-    // Determine the balance of the seller
-    let currentBalance = await nft.balanceOf(addr2.address);
-    currentBalance = ethers.utils.parseEther(currentBalance.toString());
+    // Determine the sold status of the item
+    let events = tx.events;
+    let event = tx.events[events.length - 1];
+    let owner = event.args.owner;
 
-    expect(currentBalance).to.eq(previousBalance + askingPriceToWei());
+    expect(owner).to.eq(addr2.address);
   });
 
   it("Should marked the item as sold", async function () {
     // Create a market sale
     let tx = await market
       .connect(addr2)
-      .createMarketSale(nftContractAddress, 1, {
-        value: askingPriceToWei(),
+      .createMarketSale(nftContractAddress, tokenId, {
+        value: auctionPrice,
       });
 
     // Mine the transaction
@@ -322,8 +348,8 @@ describe("Sell an item on the marketplace", function () {
     // Create a market sale
     let tx = await market
       .connect(addr2)
-      .createMarketSale(nftContractAddress, 1, {
-        value: askingPriceToWei(),
+      .createMarketSale(nftContractAddress, tokenId, {
+        value: auctionPrice,
       });
 
     // Mine the transaction
@@ -341,8 +367,8 @@ describe("Sell an item on the marketplace", function () {
     // Create a market sale
     let tx = await market
       .connect(addr2)
-      .createMarketSale(nftContractAddress, 1, {
-        value: askingPriceToWei(),
+      .createMarketSale(nftContractAddress, tokenId, {
+        value: auctionPrice,
       });
 
     // Mine the transaction
@@ -363,11 +389,7 @@ describe("Returning marketplace items", function () {
     for (i = 0; i < 2; i++) {
       // Set the listing fee
       const listingPrice = etherToWei("0.025");
-
-      // Provide an asking price for the NFT
-      const auctionPrice = BigNumber.from(
-        ethers.utils.parseUnits("1", "ether").toString()
-      );
+      const auctionPrice = askingPriceToWei("1");
 
       // Create an NFT
       const tokenId = await createNFT(addr1);
@@ -392,11 +414,7 @@ describe("Returning marketplace items", function () {
     for (i = 0; i < 3; i++) {
       // Set the listing fee
       const listingPrice = etherToWei("0.025");
-
-      // Provide an asking price for the NFT
-      const auctionPrice = BigNumber.from(
-        ethers.utils.parseUnits("1", "ether").toString()
-      );
+      const auctionPrice = askingPriceToWei("1");
 
       // Create an NFT
       const tokenId = await createNFT(addr1);
@@ -416,8 +434,8 @@ describe("Returning marketplace items", function () {
     // Create a market sale
     let sale = await market
       .connect(addr2)
-      .createMarketSale(nftContractAddress, 1, {
-        value: etherToWei(askingPrice),
+      .createMarketSale(nftContractAddress, tokenId, {
+        value: askingPriceToWei("1"),
       });
 
     await sale.wait();
@@ -425,7 +443,9 @@ describe("Returning marketplace items", function () {
     // fetch sender market items
     let myItems = await market.connect(addr2).fetchMyNFTs();
 
+    expect(allItems).to.be.an("array");
     expect(allItems.length).to.eq(3);
+    expect(myItems).to.be.an("array");
     expect(myItems.length).to.eq(1);
   });
 
@@ -436,11 +456,7 @@ describe("Returning marketplace items", function () {
     for (i = 0; i < 3; i++) {
       // Set the listing fee
       const listingPrice = etherToWei("0.025");
-
-      // Provide an asking price for the NFT
-      const auctionPrice = BigNumber.from(
-        ethers.utils.parseUnits("1", "ether").toString()
-      );
+      const auctionPrice = askingPriceToWei("1");
 
       // Create an NFT
       i == 2 ? (createdBy = addr2) : (createdBy = addr1);
@@ -461,7 +477,9 @@ describe("Returning marketplace items", function () {
     // fetch sender market items
     let myCreatedItems = await market.connect(addr2).fetchItemsCreated();
 
+    expect(allItems).to.be.an("array");
     expect(allItems.length).to.eq(3);
+    expect(myCreatedItems).to.be.an("array");
     expect(myCreatedItems.length).to.eq(1);
   });
 });
