@@ -1,7 +1,13 @@
 import Link from "next/link";
 import ConnectButton from "./ConnectButton";
+import NetworkButton from "./NetworkButton";
 
-const Navbar = ({ metamaskInstalled, connectWalletPressed, walletAddress }) => {
+const Navbar = ({
+  metamaskInstalled,
+  connectWalletPressed,
+  walletAddress,
+  chainId,
+}) => {
   return (
     <nav className="border-b p-6">
       <p className="text-4xl font-bold">Metaverse Marketplace</p>
@@ -20,11 +26,19 @@ const Navbar = ({ metamaskInstalled, connectWalletPressed, walletAddress }) => {
             <a className="mr-6 text-pink-500">Creator Dashboard</a>
           </Link>
         </div>
-        <ConnectButton
-          metamaskInstalled={metamaskInstalled}
-          connectWalletPressed={connectWalletPressed}
-          walletAddress={walletAddress}
-        ></ConnectButton>
+
+        <div className="flex">
+          <NetworkButton
+            metamaskInstalled={metamaskInstalled}
+            walletAddress={walletAddress}
+            chainId={chainId}
+          ></NetworkButton>
+          <ConnectButton
+            metamaskInstalled={metamaskInstalled}
+            connectWalletPressed={connectWalletPressed}
+            walletAddress={walletAddress}
+          ></ConnectButton>
+        </div>
       </div>
     </nav>
   );

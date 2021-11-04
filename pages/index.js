@@ -7,6 +7,9 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Web3Modal from "web3modal";
+import Image from "next/image";
+import Link from "next/link";
+import Head from "next/head";
 
 import { nftaddress, nftmarketaddress } from "../config";
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
@@ -15,10 +18,24 @@ import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json";
 export default function Home() {
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     loadNFTs();
+    addWalletListener();
   }, []);
+
+  function addWalletListener() {
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        if (accounts.length > 0) {
+          setIsConnected(true);
+        } else {
+          setIsConnected(false);
+        }
+      });
+    }
+  }
 
   async function loadNFTs() {
     // Using a generic provider as we don't need to know anything about the user. (READ ONLY)
@@ -34,6 +51,7 @@ export default function Home() {
     const items = await Promise.all(
       data.map(async (i) => {
         const tokenUri = await tokenContract.tokenURI(i.tokenId);
+        console.log(tokenUri);
         const meta = await axios.get(tokenUri); // ipfs endpoint
         let price = ethers.utils.formatUnits(i.price.toString(), "ether");
         let item = {
@@ -44,7 +62,9 @@ export default function Home() {
           image: meta.data.image,
           name: meta.data.name,
           description: meta.data.description,
+          tokenDetails: tokenUri,
         };
+        console.log(meta);
         return item;
       })
     );
@@ -83,40 +103,80 @@ export default function Home() {
     return <h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>;
 
   return (
-    <div className="flex justify-center">
-      <div className="px-4" style={{ maxWidth: "1600px" }}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-          {nfts.map((nft, i) => (
-            <div key={i} className="border shadow rounded-xl overflow-hidden">
-              <img src={nft.image} />
-              <div className="p-4">
-                <p
-                  style={{ height: "64px" }}
-                  className="text-2xl font-semibold"
-                >
-                  {nft.name}
-                </p>
-                <div style={{ height: "70px", overflow: "hidden" }}>
-                  <p className="text-gray-400">{nft.description}</p>
+    <>
+      <Head>
+        <title>NFT Marketplace | Home</title>
+      </Head>
+      <div className="flex justify-center">
+        <div className="px-4" style={{ maxWidth: "1600px" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4">
+            {nfts.map((nft, i) => (
+              <div
+                key={i}
+                className="border  rounded-xl overflow-hidden hover:shadow-xl"
+              >
+                <Link href={nft.image} className="cursor-pointer ">
+                  <a target="_blank">
+                    <Image
+                      src={nft.image}
+                      alt="NFT"
+                      width="350"
+                      height="350"
+                      objectFit="cover"
+                      href={nft.tokenDetails}
+                    />
+                  </a>
+                </Link>
+                <div className="p-4">
+                  <p
+                    style={{ height: "64px" }}
+                    className="text-2xl font-semibold"
+                  >
+                    {nft.name}
+                  </p>
+                  <div style={{ height: "70px", overflow: "hidden" }}>
+                    <p className="text-gray-400">{nft.description}</p>
+                  </div>
+                </div>
+                <div className=" p-4 bg-black">
+                  <div className="flex justify-end items-center  ">
+                    <Image
+                      src="/matic-token-icon.webp"
+                      alt="Matic Token Image"
+                      width="30"
+                      height="30"
+                      objectFit="contain"
+                    />
+                    <p className=" ml-2 text-2xl  font-bold text-white cursor-default">
+                      {nft.price}
+                    </p>
+                  </div>
+
+                  <>
+                    <button
+                      className="mt-2 w-full bg-pink-500 cursor-pointer text-white font-bold py-2 px-12 rounded"
+                      style={{
+                        display: isConnected ? "block" : "none",
+                      }}
+                      onClick={() => buyNft(nft)}
+                    >
+                      Buy
+                    </button>
+
+                    <Link href={nft.tokenDetails}>
+                      <a target="_blank">
+                        <button className="mt-2  cursor-pointer w-full bg-pink-500 text-white font-bold py-2 px-12 rounded ">
+                          Details
+                        </button>
+                      </a>
+                    </Link>
+                  </>
                 </div>
               </div>
-              <div className="p-4 bg-black">
-                <p className="text-2xl mb-4 font-bold text-white">
-                  {nft.price} ETH
-                </p>
-                {true && (
-                  <button
-                    className="w-full bg-pink-500 text-white font-bold py-2 px-12 rounded"
-                    onClick={() => buyNft(nft)}
-                  >
-                    Buy
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

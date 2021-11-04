@@ -1,16 +1,20 @@
 import Link from "next/link";
+import Router from "next/router";
 import Navbar from "../components/Navbar";
 import StatusBar from "../components/Statusbar";
+import Footer from "../components/Footer";
 
-import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import Web3Modal from "web3modal";
-import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
+import {
+  connectWallet,
+  getCurrentWalletConnected,
+  getNetworkName,
+} from "../utils/interact.js";
 
 const Layout = ({ children }) => {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
+  const [chainId, setChainId] = useState("");
   const [metamaskInstalled, setMetamaskInstalled] = useState(false);
 
   useEffect(() => {
@@ -19,18 +23,27 @@ const Layout = ({ children }) => {
 
       setWallet(address);
       setStatus(status);
-
+      const networkName = await getNetworkName();
+      setChainId(networkName);
       addWalletListener();
     }
 
     getWallet();
-  }, [metamaskInstalled]);
+  }, []);
 
   function addWalletListener() {
     if (window.ethereum) {
       setMetamaskInstalled(true);
 
-      window.ethereum.on("accountsChanged", (accounts) => {
+      window.ethereum.on("chainChanged", async () => {
+        const networkName = await getNetworkName();
+        console.log("networkName", networkName);
+        setChainId(networkName);
+        console.log("chainChanged");
+        window.location.reload();
+      });
+
+      window.ethereum.on("accountsChanged", async (accounts) => {
         if (accounts.length > 0) {
           setWallet(accounts[0]);
           setStatus("");
@@ -76,9 +89,11 @@ const Layout = ({ children }) => {
         connectWallet={connectWallet}
         walletAddress={walletAddress}
         connectWalletPressed={connectWalletPressed}
+        chainId={chainId}
       />
       <StatusBar status={status} />
       {children}
+      <Footer />
     </>
   );
 };

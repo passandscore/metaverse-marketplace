@@ -9,7 +9,7 @@ const ConnectButton = ({
         <button
           id="walletButton"
           onClick={connectWalletPressed}
-          className="btn btn-link  p-2 rounded-md border-2 border-pink-500 hover:bg-pink-500 px-4 text-pink-500 hover:text-white"
+          className="btn btn-link  ml-2 p-2 rounded-md border-2 border-pink-500 hover:bg-pink-500 px-4 text-pink-500 hover:text-white"
         >
           {walletAddress.length > 0 ? (
             "Connected: " +
