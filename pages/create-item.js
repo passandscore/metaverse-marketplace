@@ -121,8 +121,11 @@ export default function CreateItem() {
 
         <input type="file" name="Asset" className="my-4" onChange={onChange} />
 
-        {fileUrl && <img className="rounded mt-4" width="350" src={fileUrl} />}
-
+        {fileUrl && (
+          <div className="grid grid-cols-1 items-center">
+            <img className="rounded mt-4" width="350" src={fileUrl} />
+          </div>
+        )}
         <button
           onClick={createMarket}
           className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"

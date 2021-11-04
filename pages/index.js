@@ -9,8 +9,6 @@ import axios from "axios";
 import Web3Modal from "web3modal";
 
 import { nftaddress, nftmarketaddress } from "../config";
-
-// ABIS
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json";
 
@@ -106,12 +104,14 @@ export default function Home() {
                 <p className="text-2xl mb-4 font-bold text-white">
                   {nft.price} ETH
                 </p>
-                <button
-                  className="w-full bg-pink-500 text-white font-bold py-2 px-12 rounded"
-                  onClick={() => buyNft(nft)}
-                >
-                  Buy
-                </button>
+                {true && (
+                  <button
+                    className="w-full bg-pink-500 text-white font-bold py-2 px-12 rounded"
+                    onClick={() => buyNft(nft)}
+                  >
+                    Buy
+                  </button>
+                )}
               </div>
             </div>
           ))}
