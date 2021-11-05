@@ -14,6 +14,7 @@ import Head from "next/head";
 import { nftaddress, nftmarketaddress } from "../config";
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json";
+import Router from "next/router";
 
 export default function Home() {
   const [nfts, setNfts] = useState([]);
@@ -75,6 +76,9 @@ export default function Home() {
   }
 
   async function buyNft(nft) {
+    //Navigate the user to the transaction page
+    Router.push("/purchase-transaction-process");
+
     // Look for new ethereum instance injected by into the browser
     const web3Modal = new Web3Modal();
 
@@ -89,16 +93,23 @@ export default function Home() {
     // Format the price
     const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
 
-    // Construct the transaction
-    const transaction = await contract.createMarketSale(
-      nftaddress,
-      nft.itemId,
-      {
-        value: price,
-      }
-    );
-    await transaction.wait();
-    loadNFTs();
+    try {
+      // Construct the transaction
+      const transaction = await contract.createMarketSale(
+        nftaddress,
+        nft.itemId,
+        {
+          value: price,
+        }
+      );
+      await transaction.wait();
+      loadNFTs();
+    } catch (error) {
+      console.log(error);
+      Router.push("/");
+    }
+    //Navigate the user to the home page
+    Router.push("/");
   }
 
   if (loadingState === "loaded" && !nfts.length)

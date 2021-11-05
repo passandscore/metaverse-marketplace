@@ -20,6 +20,9 @@ export const getNetworkName = async () => {
       chainId = "Goerli";
       break;
     case "1337":
+      chainId = "Local Host";
+      break;
+    case "80001":
       chainId = "Mumbai";
       break;
 

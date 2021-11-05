@@ -22,6 +22,7 @@ import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json";
 
 export default function CreateItem() {
   const [fileUrl, setFileUrl] = useState(null);
+  const [error, setError] = useState("");
   const [formInput, updateFormInput] = useState({
     price: "",
     name: "",
@@ -44,11 +45,33 @@ export default function CreateItem() {
     }
   }
 
+  // checks to make sure that the value is a number
+  function is_Int(value) {
+    return !isNaN(parseInt(value * 1));
+  }
+
   // Update the form input state
   // Store the FILE metadata on IPFS
   async function createMarket() {
     const { name, description, price } = formInput;
-    if (!name || !description || !price || !fileUrl) return;
+    if (!name || !description || !price) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    if (!is_Int(price)) {
+      setError("Price must be a number");
+      return;
+    }
+
+    if (!fileUrl) {
+      setError("Please select a file");
+      return;
+    }
+
+    // Clear the error message
+    setError("");
+
     /* first, upload to IPFS */
     const data = JSON.stringify({
       name,
@@ -68,31 +91,45 @@ export default function CreateItem() {
   // Create the NFT
   // Add the NFT to the Market
   async function createSale(url) {
+    //Navigate the user to the transaction page
+    router.push("/create-transaction-process");
+
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
 
     /* next, create the item */
-    let contract = new ethers.Contract(nftaddress, NFT.abi, signer);
-    let transaction = await contract.createToken(url);
-    let tx = await transaction.wait();
-    let event = tx.events[0]; // contract event return value.
-    let value = event.args[2];
-    let tokenId = value.toNumber();
+    try {
+      let contract = new ethers.Contract(nftaddress, NFT.abi, signer);
+      let transaction = await contract.createToken(url);
+      let tx = await transaction.wait();
+      let event = tx.events[0]; // contract event return value.
+      let value = event.args[2];
+      let tokenId = value.toNumber();
 
-    const price = ethers.utils.parseUnits(formInput.price, "ether");
+      const price = ethers.utils.parseUnits(formInput.price, "ether");
 
-    /* then list the item for sale on the marketplace */
-    contract = new ethers.Contract(nftmarketaddress, Market.abi, signer);
-    let listingPrice = await contract.getListingPrice();
-    listingPrice = listingPrice.toString();
+      /* then list the item for sale on the marketplace */
+      contract = new ethers.Contract(nftmarketaddress, Market.abi, signer);
+      let listingPrice = await contract.getListingPrice();
+      listingPrice = listingPrice.toString();
 
-    transaction = await contract.createMarketItem(nftaddress, tokenId, price, {
-      value: listingPrice,
-    });
-    await transaction.wait();
-    router.push("/");
+      transaction = await contract.createMarketItem(
+        nftaddress,
+        tokenId,
+        price,
+        {
+          value: listingPrice,
+        }
+      );
+      await transaction.wait();
+
+      //Navigate the user to the home page
+      router.push("/");
+    } catch (error) {
+      router.push("/");
+    }
   }
 
   return (
@@ -102,9 +139,18 @@ export default function CreateItem() {
       </Head>
 
       <div className="p-4">
-        <h2 className="text-2xl py-2 text-center bg-gray-100 ">Create Asset</h2>
         <div className="flex justify-center">
           <div className="w-1/2 flex flex-col pb-12">
+            <h2 className="text-2xl py-2 text-center bg-gray-100 ">
+              Create Asset
+            </h2>
+
+            {error && (
+              <div className=" mt-4 bg-red-400 rounded">
+                <p className="text-white text-center p-2 ">{error}</p>
+              </div>
+            )}
+
             <input
               placeholder="Asset Name"
               className="mt-8 border rounded p-4"
