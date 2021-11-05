@@ -41,7 +41,9 @@ export default function Home() {
 
   async function loadNFTs() {
     // Using a generic provider as we don't need to know anything about the user. (READ ONLY)
-    const provider = new ethers.providers.JsonRpcProvider();
+    const provider = new ethers.providers.JsonRpcProvider(
+      "https://matic-mumbai.chainstacklabs.com"
+    );
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
     const marketContract = new ethers.Contract(
       nftmarketaddress,
@@ -123,6 +125,7 @@ export default function Home() {
                       width="350"
                       height="350"
                       href={nft.tokenDetails}
+                      objectFit="contain"
                     />
                   </a>
                 </Link>
