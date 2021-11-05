@@ -36,9 +36,9 @@ export const connectWallet = async () => {
       const addressArray = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
-
+      const status = testTokens();
       const obj = {
-        status: "",
+        status: status.tokens,
         address: addressArray[0],
       };
       return obj;
@@ -82,9 +82,10 @@ export const getCurrentWalletConnected = async () => {
         method: "eth_accounts",
       });
       if (addressArray.length > 0) {
+        const status = testTokens();
         return {
           address: addressArray[0],
-          status: "",
+          status: status.tokens,
         };
       } else {
         return {
@@ -121,4 +122,21 @@ export const getCurrentWalletConnected = async () => {
       ),
     };
   }
+};
+
+export const testTokens = () => {
+  return {
+    tokens: (
+      <div>
+        <Link href="https://faucet.polygon.technology/">
+          <a
+            target="_blank"
+            className=" ml-5 btn btn-link inline p-1 rounded-md border-2 border-white text-white"
+          >
+            The Matic token is required to purchase. Get Mumbai Test Tokens
+          </a>
+        </Link>
+      </div>
+    ),
+  };
 };

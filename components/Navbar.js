@@ -13,8 +13,8 @@ const Navbar = ({
       <p className="text-4xl font-bold">Metaverse Marketplace</p>
       <div className="flex mt-4 justify-between items-center">
         <div className="flex ">
-          <Link href="/">
-            <a className="mr-4 text-pink-500">Home</a>
+          {/* <Link href="/">
+            <a className="mr-4 text-pink-500 hover:font-bold">Home</a>
           </Link>
           <Link href="/create-item">
             <a className="mr-6 text-pink-500">Sell Digital Asset</a>
@@ -24,7 +24,39 @@ const Navbar = ({
           </Link>
           <Link href="/creator-dashboard">
             <a className="mr-6 text-pink-500">Creator Dashboard</a>
-          </Link>
+          </Link> */}
+
+          <ul className="flex border-b">
+            <li className="-mb-px mr-1 ">
+              <Link href="/">
+                <a className="bg-white inline-block  py-2 px-4 text-pink-500 font-semibold hover:text-purple-500  ">
+                  Home
+                </a>
+              </Link>
+            </li>
+            <li className="mr-1">
+              <Link href="/create-item">
+                <a className="bg-white inline-block py-2 px-4 text-pink-500 hover:text-purple-500 font-semibold">
+                  Sell Digital Asset
+                </a>
+              </Link>
+            </li>
+            <li className="mr-1">
+              <Link href="/my-assets">
+                <a className="bg-white inline-block py-2 px-4 text-pink-500 hover:text-purple-500 font-semibold">
+                  My Digital Assets
+                </a>
+              </Link>
+            </li>
+
+            <li className="mr-1">
+              <Link href="/creator-dashboard">
+                <a className="bg-white inline-block py-2 px-4 text-pink-500 font-semibold hover:text-purple-500">
+                  Creator Dashboard
+                </a>
+              </Link>
+            </li>
+          </ul>
         </div>
 
         <div className="flex">

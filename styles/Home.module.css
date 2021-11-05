@@ -2,6 +2,11 @@
   padding: 0 2rem;
 }
 
+.main-container {
+  min-height: 100vh;
+  position: relative;
+}
+
 .main {
   min-height: 100vh;
   padding: 4rem 0;
@@ -13,12 +18,9 @@
 }
 
 .footer {
-  display: flex;
-  flex: 1;
-  padding: 2rem 0;
-  border-top: 1px solid #eaeaea;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .footer a {
@@ -106,6 +108,13 @@
 .logo {
   height: 1em;
   margin-left: 0.5rem;
+}
+
+.nav-tab:active {
+  border-top: gray 1px solid;
+  border-top: gray 1px solid;
+  border-right: gray 1px solid;
+  border-radius: 5px;
 }
 
 @media (max-width: 600px) {

@@ -2,13 +2,13 @@ import Link from "next/link";
 import Router from "next/router";
 import Navbar from "../components/Navbar";
 import StatusBar from "../components/Statusbar";
-import Footer from "../components/Footer";
 
 import { useEffect, useState } from "react";
 import {
   connectWallet,
   getCurrentWalletConnected,
   getNetworkName,
+  testTokens,
 } from "../utils/interact.js";
 
 const Layout = ({ children }) => {
@@ -46,7 +46,9 @@ const Layout = ({ children }) => {
       window.ethereum.on("accountsChanged", async (accounts) => {
         if (accounts.length > 0) {
           setWallet(accounts[0]);
-          setStatus("");
+          const status = testTokens();
+          setStatus(status.tokens);
+          Router.push("/");
         } else {
           setWallet("");
           setStatus("🦊 Connect to Metamask using the top right button.");
@@ -83,7 +85,7 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <>
+    <div className="main-container">
       <Navbar
         metamaskInstalled={metamaskInstalled}
         connectWallet={connectWallet}
@@ -93,8 +95,7 @@ const Layout = ({ children }) => {
       />
       <StatusBar status={status} />
       {children}
-      <Footer />
-    </>
+    </div>
   );
 };
 

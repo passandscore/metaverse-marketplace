@@ -101,54 +101,57 @@ export default function CreateItem() {
         <title>NFT Marketplace | Create</title>
       </Head>
 
-      <div className="flex justify-center">
-        <div className="w-1/2 flex flex-col pb-12">
-          <input
-            placeholder="Asset Name"
-            className="mt-8 border rounded p-4"
-            onChange={(e) =>
-              updateFormInput({ ...formInput, name: e.target.value })
-            }
-          />
-          <textarea
-            placeholder="Asset Description"
-            className="mt-2 border rounded p-4"
-            onChange={(e) =>
-              updateFormInput({ ...formInput, description: e.target.value })
-            }
-          />
-          <input
-            placeholder="Asset Price in Matic"
-            className="mt-2 border rounded p-4"
-            onChange={(e) =>
-              updateFormInput({ ...formInput, price: e.target.value })
-            }
-          />
+      <div className="p-4">
+        <h2 className="text-2xl py-2 text-center bg-gray-100 ">Create Asset</h2>
+        <div className="flex justify-center">
+          <div className="w-1/2 flex flex-col pb-12">
+            <input
+              placeholder="Asset Name"
+              className="mt-8 border rounded p-4"
+              onChange={(e) =>
+                updateFormInput({ ...formInput, name: e.target.value })
+              }
+            />
+            <textarea
+              placeholder="Asset Description"
+              className="mt-2 border rounded p-4"
+              onChange={(e) =>
+                updateFormInput({ ...formInput, description: e.target.value })
+              }
+            />
+            <input
+              placeholder="Asset Price in Matic"
+              className="mt-2 border rounded p-4"
+              onChange={(e) =>
+                updateFormInput({ ...formInput, price: e.target.value })
+              }
+            />
 
-          <input
-            type="file"
-            name="Asset"
-            className="my-4"
-            onChange={onChange}
-          />
+            <input
+              type="file"
+              name="Asset"
+              className="my-4"
+              onChange={onChange}
+            />
 
-          {fileUrl && (
-            <div className="grid grid-cols-1 items-center">
-              <Image
-                src={fileUrl}
-                alt="NFT"
-                width="350"
-                height="350"
-                objectFit="contain"
-              />
-            </div>
-          )}
-          <button
-            onClick={createMarket}
-            className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"
-          >
-            Create Digital Asset
-          </button>
+            {fileUrl && (
+              <div className="grid grid-cols-1 items-center">
+                <Image
+                  src={fileUrl}
+                  alt="NFT"
+                  width="350"
+                  height="350"
+                  objectFit="contain"
+                />
+              </div>
+            )}
+            <button
+              onClick={createMarket}
+              className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"
+            >
+              Create Digital Asset
+            </button>
+          </div>
         </div>
       </div>
     </>

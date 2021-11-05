@@ -9,7 +9,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Web3Modal from "web3modal";
 import Head from "next/head";
-import Router from "next/router";
+import Link from "next/link";
+import Image from "next/image";
 
 import { nftmarketaddress, nftaddress } from "../config";
 
@@ -69,15 +70,30 @@ export default function MyAssets() {
       <Head>
         <title>NFT Marketplace | Assets</title>
       </Head>
-      <div className="flex justify-center">
-        <div className="p-4">
+
+      <div className="p-4">
+        <h2 className="text-2xl py-2 text-center bg-gray-100 ">My Assets</h2>
+        <div className="flex justify-center">
+          <div className="px-4" style={{ maxWidth: "1600px" }}></div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
             {nfts.map((nft, i) => (
               <div key={i} className="border shadow rounded-xl overflow-hidden">
-                <img src={nft.image} className="rounded" />
+                <Link href={nft.image} className="cursor-pointer ">
+                  <a target="_blank">
+                    <Image
+                      src={nft.image}
+                      alt="NFT"
+                      width="350"
+                      height="350"
+                      objectFit="cover"
+                      href={nft.tokenDetails}
+                    />
+                  </a>
+                </Link>
                 <div className="p-4 bg-black">
                   <p className="text-2xl font-bold text-white">
-                    Price - {nft.price} Eth
+                    Price - {nft.price} Matic
                   </p>
                 </div>
               </div>

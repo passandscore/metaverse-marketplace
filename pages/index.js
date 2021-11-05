@@ -22,17 +22,19 @@ export default function Home() {
 
   useEffect(() => {
     loadNFTs();
+
     addWalletListener();
   }, []);
 
-  function addWalletListener() {
+  async function addWalletListener() {
+    const addressArray = await window.ethereum.request({
+      method: "eth_accounts",
+    });
+    addressArray.length > 0 && setIsConnected(true);
+
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
-        if (accounts.length > 0) {
-          setIsConnected(true);
-        } else {
-          setIsConnected(false);
-        }
+        accounts.length > 0 ? setIsConnected(true) : setIsConnected(false);
       });
     }
   }
@@ -51,7 +53,6 @@ export default function Home() {
     const items = await Promise.all(
       data.map(async (i) => {
         const tokenUri = await tokenContract.tokenURI(i.tokenId);
-        console.log(tokenUri);
         const meta = await axios.get(tokenUri); // ipfs endpoint
         let price = ethers.utils.formatUnits(i.price.toString(), "ether");
         let item = {
@@ -64,7 +65,6 @@ export default function Home() {
           description: meta.data.description,
           tokenDetails: tokenUri,
         };
-        console.log(meta);
         return item;
       })
     );
@@ -109,7 +109,7 @@ export default function Home() {
       </Head>
       <div className="flex justify-center">
         <div className="px-4" style={{ maxWidth: "1600px" }}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4 mt-8">
             {nfts.map((nft, i) => (
               <div
                 key={i}
@@ -122,7 +122,6 @@ export default function Home() {
                       alt="NFT"
                       width="350"
                       height="350"
-                      objectFit="cover"
                       href={nft.tokenDetails}
                     />
                   </a>

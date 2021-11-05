@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Web3Modal from "web3modal";
 import Head from "next/head";
+import Link from "next/link";
+import Image from "next/image";
 
 import { nftmarketaddress, nftaddress } from "../config";
 
@@ -40,15 +42,18 @@ export default function CreatorDashboard() {
     const items = await Promise.all(
       data.map(async (i) => {
         const tokenUri = await tokenContract.tokenURI(i.tokenId);
-        const meta = await axios.get(tokenUri);
+        const meta = await axios.get(tokenUri); // ipfs endpoint
         let price = ethers.utils.formatUnits(i.price.toString(), "ether");
         let item = {
           price,
-          tokenId: i.tokenId.toNumber(),
+          itemId: i.itemId.toNumber(),
           seller: i.seller,
           owner: i.owner,
-          sold: i.sold,
           image: meta.data.image,
+          name: meta.data.name,
+          description: meta.data.description,
+          sold: i.sold,
+          tokenDetails: tokenUri,
         };
         return item;
       })
@@ -69,6 +74,7 @@ export default function CreatorDashboard() {
         <h1 className="py-10 px-20 text-3xl">No assets created</h1>;
       </>
     );
+
   return (
     <>
       <Head>
@@ -76,31 +82,68 @@ export default function CreatorDashboard() {
       </Head>
       <div>
         <div className="p-4">
-          <h2 className="text-2xl py-2">Items Created</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-            {nfts.map((nft, i) => (
-              <div key={i} className="border shadow rounded-xl overflow-hidden">
-                <img src={nft.image} className="rounded" />
-                <div className="p-4 bg-black">
-                  <p className="text-2xl font-bold text-white">
-                    Price - {nft.price} Matic
-                  </p>
+          <h2 className="text-2xl py-2 text-center bg-gray-100">
+            Items Created
+          </h2>
+          <div className="flex justify-center">
+            <div className="px-4" style={{ maxWidth: "1600px" }}></div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+              {nfts.map((nft, i) => (
+                <div
+                  key={i}
+                  className="border shadow rounded-xl overflow-hidden"
+                >
+                  <Link href={nft.image} className="cursor-pointer ">
+                    <a target="_blank">
+                      <Image
+                        src={nft.image}
+                        alt="NFT"
+                        width="350"
+                        height="350"
+                        objectFit="cover"
+                        href={nft.tokenDetails}
+                      />
+                    </a>
+                  </Link>
+                  <div className="p-4 bg-black">
+                    <p className="text-2xl font-bold text-white">
+                      Price - {nft.price} Matic
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-        <div className="px-4">
-          {Boolean(sold.length) && (
-            <div>
-              <h2 className="text-2xl py-2">Items sold</h2>
+      </div>
+      <div className="px-4">
+        {Boolean(sold.length) && (
+          <div>
+            <h2 className="text-2xl py-2 text-center bg-gray-100 ">
+              Items sold
+            </h2>
+            <div className="flex justify-center">
+              <div className="px-4" style={{ maxWidth: "1600px" }}></div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
                 {sold.map((nft, i) => (
                   <div
                     key={i}
                     className="border shadow rounded-xl overflow-hidden"
                   >
-                    <img src={nft.image} className="rounded" />
+                    <Link href={nft.image} className="cursor-pointer ">
+                      <a target="_blank">
+                        <Image
+                          src={nft.image}
+                          alt="NFT"
+                          width="350"
+                          height="350"
+                          objectFit="cover"
+                          href={nft.tokenDetails}
+                        />
+                      </a>
+                    </Link>
                     <div className="p-4 bg-black">
                       <p className="text-2xl font-bold text-white">
                         Price - {nft.price} Matic
@@ -110,8 +153,8 @@ export default function CreatorDashboard() {
                 ))}
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );
