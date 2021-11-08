@@ -14,12 +14,11 @@ Implemented a NFT based Dapp application using Next.js and Matic's Mumbai testne
 
 This was my first time implementing Next.js, Tailwind CSS, Hardhat and the Mumbai testnest. Fortunately for me, the documentation was well put together. I found that these technologies really worked well together. Hardhat made smart contract deployment a breeze while Next.js and Tailwind simplified the frontend process.
 
-
 ---
 
 ### Languages
 
-- [Solidity](https://docs.soliditylang.org/en/v0.8.9/) 
+- [Solidity](https://docs.soliditylang.org/en/v0.8.9/)
 - [JavaScript](https://www.javascript.com/)
 
 ### Built With
@@ -45,6 +44,8 @@ This was my first time implementing Next.js, Tailwind CSS, Hardhat and the Mumba
 
 ### 1. Smart Contracts
 
+<img src="public/contract-flowchart.svg" alt="Logo" >
+
 #### Functionality
 
 - Ensured the contract logic is simple.
@@ -65,7 +66,6 @@ This was my first time implementing Next.js, Tailwind CSS, Hardhat and the Mumba
 
 Below are a couple of the design patterns that are implemented. I may have overlooked some of the patterns used within the imported Open Zeppelin libraries.
 
-
 | Category      | Pattern                    |
 | ------------- | -------------------------- |
 | Authorization | Access restriction         |
@@ -85,7 +85,6 @@ Below are a couple of the design patterns that are implemented. I may have overl
 #### Notifications
 
 - You will be notified regarding the following:
-
 
   | Error                            | Success                    | Info                       |
   | -------------------------------- | -------------------------- | -------------------------- |
