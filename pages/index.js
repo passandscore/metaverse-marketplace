@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Web3Modal from "web3modal";
-import Image from "next/Image";
+import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 

@@ -12,7 +12,7 @@ import { create as ipfsHttpClient } from "ipfs-http-client";
 import { useRouter } from "next/router";
 import Web3Modal from "web3modal";
 import axios from "axios";
-import Image from "next/Image";
+import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
