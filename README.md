@@ -1,8 +1,8 @@
 # Metaverse Marketplace - Dapp Application
 
-<a href="https://devs-app.herokuapp.com/" target="_blank">View Dapp Here</a>
+<a href="https://metaverse-marketplace-passandscore.vercel.app/" class="button big">View NFT Marketplace</a>
 
-<img src="public/Metaverse-Marketplace.PNG" alt="Logo" >
+<img src="public/Metaverse-Marketplace.PNG" href="https://metaverse-marketplace-passandscore.vercel.app/" alt="Logo" >
 
 <!-- ABOUT THE PROJECT -->
 
