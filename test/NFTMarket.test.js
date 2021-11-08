@@ -75,19 +75,19 @@ describe("NFT Market Deployment", function () {
 });
 
 describe("Owner only functions", function () {
-  it("Should error is msg.sender trys to access owner balance", async function () {
+  it("Should error if msg.sender trys to access owner balance", async function () {
     await expect(market.connect(addr1).getOwnerBalance()).to.be.revertedWith(
       "Only the owner can do this"
     );
   });
 
-  it("Should error is msg.sender trys to access owner address", async function () {
+  it("Should error if msg.sender trys to access owner address", async function () {
     await expect(market.connect(addr1).getOwner()).to.be.revertedWith(
       "Only the owner can do this"
     );
   });
 
-  it("Should error is msg.sender trys to access owner balance", async function () {
+  it("Should error if msg.sender trys to access owner balance", async function () {
     await expect(market.connect(addr1).getOwnerBalance()).to.be.revertedWith(
       "Only the owner can do this"
     );
