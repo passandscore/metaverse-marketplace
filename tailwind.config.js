@@ -5,7 +5,7 @@ module.exports = {
     extend: {},
   },
   variants: {
-    extend: { margin: ["hover"], fontWeight: ["hover"] },
+    extend: { margin: ["hover"], fontWeight: ["hover"], font: ["hover"] },
   },
   plugins: [],
 };

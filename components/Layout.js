@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Router from "next/router";
 import Navbar from "../components/Navbar";
 import StatusBar from "../components/Statusbar";
 
@@ -8,7 +7,7 @@ import {
   connectWallet,
   getCurrentWalletConnected,
   getNetworkName,
-  testTokens,
+  maticDetails,
 } from "../utils/interact.js";
 
 const Layout = ({ children }) => {
@@ -37,21 +36,20 @@ const Layout = ({ children }) => {
 
       window.ethereum.on("chainChanged", async () => {
         const networkName = await getNetworkName();
-        console.log("networkName", networkName);
         setChainId(networkName);
-        console.log("chainChanged");
         window.location.reload();
       });
 
       window.ethereum.on("accountsChanged", async (accounts) => {
         if (accounts.length > 0) {
           setWallet(accounts[0]);
-          const status = testTokens();
+          const status = maticDetails();
           setStatus(status.tokens);
-          Router.push("/");
+          window.location.reload();
         } else {
           setWallet("");
           setStatus("🦊 Connect to Metamask using the top right button.");
+          window.location.reload();
         }
       });
     } else {

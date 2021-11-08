@@ -19,7 +19,8 @@ import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 
 export default function MyAssets() {
   const [nfts, setNfts] = useState([]);
-  const [loadingState, setLoadingState] = useState("not-loaded");
+  const [loadedNfts, setLoadedNfts] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadNFTs();
@@ -59,11 +60,14 @@ export default function MyAssets() {
       })
     );
     setNfts(items);
-    setLoadingState("loaded");
+    setLoadedNfts(true);
+    setIsLoading(false);
   }
 
-  if (loadingState === "loaded" && !nfts.length)
-    return <h1 className="py-10 px-20 text-3xl">No assets owned</h1>;
+  if (loadedNfts && !nfts.length)
+    return (
+      <h1 className="py-10 px-20 text-3xl">No assets have been purchased</h1>
+    );
 
   return (
     <>
@@ -71,51 +75,62 @@ export default function MyAssets() {
         <title>NFT Marketplace | Assets</title>
       </Head>
 
-      <div className="p-4">
-        <div className="flex justify-center">
-          <div className="px-4" style={{ maxWidth: "1600px" }}>
-            <h2 className="text-2xl py-2 text-center bg-gray-100 ">
-              My Assets
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-              {nfts.map((nft, i) => (
-                <div
-                  key={i}
-                  className="border shadow rounded-xl overflow-hidden"
-                >
-                  <Link href={nft.image} className="cursor-pointer ">
-                    <a target="_blank">
-                      <Image
-                        src={nft.image}
-                        alt="NFT"
-                        width="350"
-                        height="350"
-                        objectFit="contain"
-                        href={nft.tokenDetails}
-                      />
-                    </a>
-                  </Link>
+      {isLoading ? (
+        <div className="flex justify-center mt-20">
+          <Image
+            src={"/loading-spinner.gif"}
+            alt="Loader"
+            width="200"
+            height="200"
+          />
+        </div>
+      ) : (
+        <div className="p-4  items-center">
+          <div className="flex justify-center ">
+            <div className="px-4">
+              <h2 className="text-2xl py-2 text-center bg-gray-100 rounded ">
+                My Assets
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+                {nfts.map((nft, i) => (
+                  <div
+                    key={i}
+                    className="border shadow rounded-xl overflow-hidden"
+                  >
+                    <Link href={nft.image} className="cursor-pointer ">
+                      <a target="_blank">
+                        <Image
+                          src={nft.image}
+                          alt="NFT"
+                          width="350"
+                          height="350"
+                          objectFit="contain"
+                          href={nft.tokenDetails}
+                        />
+                      </a>
+                    </Link>
 
-                  <div className=" p-4 bg-black">
-                    <div className="flex justify-end items-center  ">
-                      <Image
-                        src="/matic-token-icon.webp"
-                        alt="Matic Token Image"
-                        width="30"
-                        height="30"
-                        objectFit="contain"
-                      />
-                      <p className=" ml-2 text-2xl  font-bold text-white cursor-default">
-                        {nft.price}
-                      </p>
+                    <div className=" p-4 bg-black">
+                      <div className="flex justify-end items-center  ">
+                        <Image
+                          src="/matic-token-icon.webp"
+                          alt="Matic Token Image"
+                          width="30"
+                          height="30"
+                          objectFit="contain"
+                        />
+                        <p className=" ml-2 text-2xl  font-bold text-white cursor-default">
+                          {nft.price}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

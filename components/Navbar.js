@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ConnectButton from "./ConnectButton";
 import NetworkButton from "./NetworkButton";
 
@@ -10,7 +11,16 @@ const Navbar = ({
 }) => {
   return (
     <nav className="border-b p-6">
-      <p className="text-4xl font-bold">Metaverse Marketplace</p>
+      <div className="flex">
+        <Image
+          src="/matic-token-icon.webp"
+          alt="Matic Token Image"
+          width="50"
+          height="50"
+          objectFit="contain"
+        />
+        <p className="text-4xl pl-2">Metaverse Marketplace</p>
+      </div>
       <div className="flex mt-4 justify-between items-center">
         <div className="flex ">
           <ul className="flex border-b">
