@@ -8,15 +8,19 @@
 
 ## About The Project
 
-Implemented a NFT based Dapp application using Next.js and Matic's Mumbai testnet. The purpose of the application is give users the ability to create digital assets (NFTs). They then have the option to place those assets on the marketplace for purchasing.
+Implemented a NFT based Dapp application using Next.js and Matic's Mumbai testnet. The purpose of the application is to give users the ability to create digital assets (NFTs). They then have the option to place those assets on the marketplace for purchasing.
 
 ## What I learned
 
-This was my first time implementing Next.js, Tailwind CSS, Hardhat and the Mumbai testnest. Fortunantley for me, the documentation was well put together. I found that these techonolgies really worked well together. Hardhat made smart contract deployment a breeze while nest.js and tailwind simplified the frontend process.
+This was my first time implementing Next.js, Tailwind CSS, Hardhat and the Mumbai testnest. Fortunately for me, the documentation was well put together. I found that these technologies really worked well together. Hardhat made smart contract deployment a breeze while Next.js and Tailwind simplified the frontend process.
+
+
+---
 
 ### Languages
 
--[Solidity](https://docs.soliditylang.org/en/v0.8.9/) -[JavaScript](https://www.javascript.com/)
+- [Solidity](https://docs.soliditylang.org/en/v0.8.9/) 
+- [JavaScript](https://www.javascript.com/)
 
 ### Built With
 
@@ -35,6 +39,8 @@ This was my first time implementing Next.js, Tailwind CSS, Hardhat and the Mumba
 - [React Toastify](https://github.com/fkhadra/react-toastify#readme)
 - [Web3 Modal](https://www.npmjs.com/package/web3modal)
 
+---
+
 ## My Approach
 
 ### 1. Smart Contracts
@@ -48,16 +54,17 @@ This was my first time implementing Next.js, Tailwind CSS, Hardhat and the Mumba
 
 #### Security
 
-- Reentrancy is handled with a Reentrancy Guard from the Open Zeppelin nonReentrant library. [See here](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol)
+- Re-entrancy is handled with a Re-entrancy Guard from the Open Zeppelin nonReentrant library. [See here](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol)
 
 #### Optimization
 
-- Code duplication has been eliminated using previously-deployed contracts, main those that have been audited from s [OpenZeppelin's Solidity Library](https://github.com/OpenZeppelin/openzeppelin-contracts)
+- Code duplication has been eliminated using previously-deployed contracts, mainly those that have been audited from [OpenZeppelin's Solidity Library](https://github.com/OpenZeppelin/openzeppelin-contracts)
 - Event indexing allows you to search for these events using the indexed parameters as filters.
 
 #### Design Patterns
 
 Below are a couple of the design patterns that are implemented. I may have overlooked some of the patterns used within the imported Open Zeppelin libraries.
+
 
 | Category      | Pattern                    |
 | ------------- | -------------------------- |
@@ -69,15 +76,16 @@ Below are a couple of the design patterns that are implemented. I may have overl
 | Security      | Check-effects-interactions |
 |               | Mutex                      |
 
-### 2. Front-end
+---
 
-#### Functionaltiy
+#### Functionality
 
 - The users have the ability to connect their Metamask wallet in order to complete transactions. They can create NFTs and view them on [PolyScan](https://mumbai.polygonscan.com/). Furthermore, they can list them on the marketplace for others to purchase.
 
 #### Notifications
 
-- You will be notified regarding the following errors
+- You will be notified regarding the following:
+
 
   | Error                            | Success                    | Info                       |
   | -------------------------------- | -------------------------- | -------------------------- |
@@ -95,7 +103,9 @@ Below are a couple of the design patterns that are implemented. I may have overl
 
 Available as a browser extension and as a mobile app, [MetaMask](https://metamask.io/) equips you with a key vault, secure login, token wallet, and token exchange—everything you need to manage your digital assets.
 
-### 2. Unit Testing
+---
+
+### 3. Unit Testing
 
 [Hardhat](https://hardhat.org/) is Flexible. Extensible. Fast. Ethereum development environment for professionals.
 
@@ -103,9 +113,13 @@ Available as a browser extension and as a mobile app, [MetaMask](https://metamas
 
 <img src="public/Unit-Testing-Coverage.PNG" alt="Coverage" >
 
+---
+
 ### 2. Off-chain Storage
 
 The InterPlanetary File System [IPFS](https://ipfs.io/) is a protocol and peer-to-peer network for storing and sharing data in a distributed file system. IPFS uses content-addressing to uniquely identify each file in a global namespace connecting all computing devices.
+
+---
 
 <!-- CONTACT -->
 
