@@ -78,7 +78,7 @@ Below are a couple of the design patterns that are implemented. I may have overl
 
 ---
 
-### 1. Frontend
+### 2. Frontend
 
 #### Functionality
 
@@ -116,7 +116,7 @@ Available as a browser extension and as a mobile app, [MetaMask](https://metamas
 
 ---
 
-### 2. Off-chain Storage
+### 4. Off-chain Storage
 
 The InterPlanetary File System [IPFS](https://ipfs.io/) is a protocol and peer-to-peer network for storing and sharing data in a distributed file system. IPFS uses content-addressing to uniquely identify each file in a global namespace connecting all computing devices.
 
