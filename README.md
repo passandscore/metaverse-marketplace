@@ -78,6 +78,8 @@ Below are a couple of the design patterns that are implemented. I may have overl
 
 ---
 
+### 1. Frontend
+
 #### Functionality
 
 - The users have the ability to connect their Metamask wallet in order to complete transactions. They can create NFTs and view them on [PolyScan](https://mumbai.polygonscan.com/). Furthermore, they can list them on the marketplace for others to purchase.

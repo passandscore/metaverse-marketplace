@@ -271,7 +271,7 @@ export default function Home() {
                   loadNFTs();
                 }}
               >
-                Close
+                Finish
               </button>
             </div>
           </div>
